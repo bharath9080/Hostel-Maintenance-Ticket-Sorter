@@ -64,7 +64,15 @@ The system does not automatically close tickets.
 
 ## 7. Current Development Status
 
-The local mock-processing stage has been tested for a sample complaint. Full dataset processing and live LLM integration must be verified separately.
+- Local mock classifier implemented and tested.
+- Single-complaint mock workflow tested successfully.
+- Full dataset of 20 complaints processed successfully.
+- Duplicate detection and red-team tests completed.
+- JSON response validation tested successfully.
+- Five output files generated.
+- Live Gemini API integration is pending faculty-managed access and verification.
+
+The current classifier uses local Python logic and does not make external Gemini API calls.
 
 ## 8. How to Run
 
