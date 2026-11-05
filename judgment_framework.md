@@ -67,3 +67,23 @@ The warden is responsible for:
 The AI system assists with classification and organization. The warden remains responsible for final operational decisions.
 
 This human-in-the-loop approach helps prevent incorrect automated decisions and improves maintenance management.
+
+## 8. Current Implementation Status
+
+The current project uses a local mock classifier to simulate the planned AI classification process.
+
+Python handles room validation, safety checks, team assignment, duplicate detection, due-date calculation, and report generation.
+
+Live Gemini API integration is pending approved access and verification.
+
+The warden remains responsible for reviewing urgent tickets, assigning maintenance work, and closing tickets. The system does not automatically close tickets.
+
+## 9. Human-in-the-Loop Decision Flow
+
+1. Student submits a maintenance complaint.
+2. Classifier extracts the complaint details.
+3. Python validates the room and applies safety rules.
+4. Python checks for duplicate tickets and assigns the maintenance team.
+5. Urgent tickets are highlighted for warden review.
+6. The warden reviews, assigns, and monitors maintenance work.
+7. The warden confirms completion and closes the ticket manually.
