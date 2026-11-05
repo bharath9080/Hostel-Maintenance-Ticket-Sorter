@@ -1,23 +1,78 @@
 
-import json
+import re
 
 
 def classify_with_gemini(complaint):
     """
-    Sends a complaint to the Gemini service
-    and returns structured classification data.
-
-    Live API connection will be added after
-    faculty-managed, age-compliant access is arranged.
+    Local mock classifier for testing.
+    No external API request is made.
     """
 
     if not complaint or not complaint.strip():
         raise ValueError("Complaint cannot be empty")
 
-    # Placeholder: no API request is made yet.
-    raise NotImplementedError(
-        "Gemini API connection is not configured yet."
+    text = complaint.lower()
+
+    # Water near electrical fittings
+    if "water" in text and (
+        "electrical fittings" in text or "near the switch" in text
+    ):
+        issue = "electrical"
+        urgent = True
+
+    # Electrical complaints
+    elif any(word in text for word in [
+        "spark", "burning smell", "shock", "fan", "switchboard"
+    ]):
+        issue = "electrical"
+        urgent = any(word in text for word in [
+            "spark", "burning smell", "shock"
+        ])
+
+    # Plumbing complaints
+    elif any(word in text for word in ["leak", "pipe", "tap"]):
+        issue = "plumbing"
+        urgent = any(word in text for word in [
+            "overflowing", "flooding"
+        ])
+
+    # Internet complaints
+    elif "wifi" in text or "internet" in text:
+        issue = "internet"
+        urgent = False
+
+    # Cleaning complaints
+    elif any(word in text for word in [
+        "clean", "housekeeping", "dirty"
+    ]):
+        issue = "cleaning"
+        urgent = False
+
+    # Carpentry complaints
+    elif any(word in text for word in [
+        "door", "window", "handle"
+    ]):
+        issue = "carpentry"
+        urgent = False
+
+    else:
+        issue = "other"
+        urgent = False
+
+    # Extract room number exactly as written
+    match = re.search(
+        r"\b[A-D][1-4](?:0[1-9]|1[0-9]|20)\b",
+        complaint.upper()
     )
+
+    response = {
+        "room": match.group(0) if match else None,
+        "issue": issue,
+        "urgent": urgent,
+        "summary": " ".join(complaint.split()[:10])
+    }
+
+    return validate_gemini_response(response)
 
 
 def validate_gemini_response(response):

@@ -1,6 +1,7 @@
 
 import csv
 import re
+from gemini_classifier import classify_with_gemini
 from datetime import datetime, timedelta
 from pathlib import Path
 
@@ -306,7 +307,7 @@ def process_complaints():
         complaint_date = row["date"]
         complaint = row["complaint"]
 
-        result = classify(complaint)
+        result = classify_with_gemini(complaint)
 
         if not is_valid(result, complaint):
             print("Invalid classification:", complaint_id)
