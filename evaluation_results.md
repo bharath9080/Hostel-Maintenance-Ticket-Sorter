@@ -27,6 +27,25 @@ The mock classifier successfully extracted the room, issue, urgency, and summary
 
 **Status:** PASSED — mock pipeline execution completed.
 
+## 4. JSON Response Validation Tests
+
+The following validation tests were executed using `test_gemini_classifier.py`.
+
+| Test | Description | Expected Result | Actual Result | Status |
+|---|---|---|---|---|
+| T01 | Valid classification response | Accept response | Accepted | PASSED |
+| T02 | Invalid issue category | Reject response | Invalid issue category detected | PASSED |
+| T03 | Invalid urgency data type | Reject response | Invalid urgency type detected | PASSED |
+| T04 | Summary exceeds 10 words | Reject response | Length validation error detected | PASSED |
+
+All four JSON response validation tests passed.
+
+## 5. Limitations
+
+- These tests use a local mock classifier, not a live LLM.
+- R03 tests the duplicate-grouping dictionary logic in isolation, not the complete CSV-processing pipeline.
+- Live LLM integration and end-to-end duplicate testing remain to be completed.
+
 ## 4. Limitations
 
 - These tests use a local mock classifier, not a live LLM.
