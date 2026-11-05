@@ -1,8 +1,8 @@
 complaint_id,room,issue,urgent,summary,ticket,status
-H01,B-214,electrical,False,Fan not working in B-214 since yesterday,,Needs information
+H01,,electrical,False,Fan not working in B-214 since yesterday,,Needs information
 H02,C310,plumbing,False,Water leaking from bathroom in C310,T001,Joined existing ticket
 H03,A105,electrical,True,Sparks coming from switchboard in A105. Burning smell,T004,New ticket created
-H04,E210,carpentry,False,E210 door lock broken,,Needs information
+H04,,carpentry,False,E210 door lock broken,,Needs information
 H05,D415,internet,False,WiFi not working in D415,T003,Joined existing ticket
 H06,A105,electrical,True,Room A105 switchboard producing sparks,T004,Joined existing ticket
 H07,B214,electrical,False,Room B214 fan still not working,T002,Joined existing ticket
