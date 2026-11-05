@@ -8,7 +8,7 @@
 
 **Reason:** Manual complaint sorting can take time and make it difficult to identify urgent issues.
 
-**Approach:** Use an LLM for complaint classification and Python for validation and processing.
+**Approach:** Plan to use an LLM for complaint classification and Python for validation and processing.
 
 ### Entry 2: Selecting the Classification Method
 
@@ -20,10 +20,10 @@
 
 ```json
 {
-    "room": "A105",
-    "issue": "electrical",
-    "urgent": true,
-    "summary": "Sparks coming from the switchboard"
+  "room": "A105",
+  "issue": "electrical",
+  "urgent": true,
+  "summary": "Sparks coming from the switchboard"
 }
 ```
 
@@ -55,12 +55,11 @@
 
 **Reason:** Multiple complaints about the same issue in the same room should be linked to an existing ticket.
 
-### Entry 7: Mock Testing
+### Entry 7: Mock Testing and Evaluation
 
 **Test Complaint:** Sparks coming from the switchboard in A105.
 
 **Mock Classification:**
-
 - Room: A105
 - Issue: electrical
 - Urgent: True
@@ -68,7 +67,16 @@
 
 **Observed Result:** JSON validation successful, room validation successful, and urgency detection successful.
 
-**Testing Status:** One sample complaint successfully passed the local mock test. Full dataset testing remains to be completed.
+**Full Dataset Testing:**
+- Total complaints: 20
+- New tickets: 12
+- Duplicate complaints: 6
+- Needs more information: 2
+- Urgent tickets: 3
+
+**Red-Team Testing:** R01, R02, and R03 passed their tests. R03 was tested separately using duplicate-grouping dictionary logic.
+
+**Testing Status:** Local mock testing completed successfully. Live LLM integration and full end-to-end duplicate testing remain pending.
 
 ### Entry 8: Human Supervision
 
@@ -76,6 +84,6 @@
 
 **Reason:** The system should assist human decision-making rather than independently make final maintenance decisions.
 
-## Conclusion
+### Conclusion
 
-The project uses AI for complaint classification and Python for rule-based processing. Testing and evaluation will continue as the project develops.
+The project combines AI-based classification as the planned approach with Python-based rule processing. The current implementation uses a local mock classifier rather than a live Gemini API connection. The mock workflow, validation tests, duplicate logic, and full dataset processing have been tested successfully. Further development will focus on live LLM integration and end-to-end evaluation.
