@@ -69,3 +69,20 @@ Live API cost and latency measurements are pending approved API integration.
 ### 8. Conclusion
 
 The system is designed to minimize unnecessary API usage by using the LLM only for complaint classification and handling the remaining operations locally through Python.
+
+### 9. Illustrative Planning Estimate
+
+The following figures are assumptions for planning purposes, not measured Gemini API results.
+
+| Parameter | Planning Assumption |
+|---|---|
+| Complaints per day | 20 |
+| API requests per complaint | 1 |
+| Total daily API requests | 20 |
+| Approximate response time per request | 1–5 seconds |
+| Daily API cost | Depends on selected Gemini model and token usage |
+| Actual measured latency | Pending live integration |
+
+**Note:** The response-time range is an illustrative target, not a verified measurement. Actual latency and cost must be measured after approved live API integration using the selected model's official pricing.
+
+The current mock classifier makes no external API requests, so its API cost is zero.
