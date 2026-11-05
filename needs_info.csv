@@ -1,0 +1,3 @@
+complaint_id,date,complaint,room,reason
+H01,2026-11-03,Fan not working in B-214 since yesterday,B-214,Missing or invalid room number
+H04,2026-11-03,E210 door lock broken,E210,Missing or invalid room number

@@ -1,0 +1,16 @@
+ticket,room,issue,team,opened,due_date,urgent,complaint_ids,complaint_count,status
+T001,C310,plumbing,Plumbing Maintenance Team,2026-11-01,2026-11-03,False,H02;H08,2,Open
+T002,B214,electrical,Electrical Maintenance Team,2026-11-02,2026-11-04,False,H07,1,Open
+T003,D415,internet,IT Support Team,2026-11-02,2026-11-04,False,H05,1,Open
+T004,A105,electrical,Electrical Maintenance Team,2026-11-03,2026-11-03,True,H03;H06;H18,3,Open
+T005,D215,cleaning,Housekeeping Team,2026-11-03,2026-11-05,False,H09,1,Open
+T006,A205,electrical,Electrical Maintenance Team,2026-11-03,2026-11-03,True,H10,1,Open
+T007,B315,carpentry,Carpentry Maintenance Team,2026-11-03,2026-11-05,False,H11,1,Open
+T008,C415,internet,IT Support Team,2026-11-03,2026-11-05,False,H12,1,Open
+T009,A115,electrical,Electrical Maintenance Team,2026-11-03,2026-11-05,False,H13,1,Open
+T010,D120,plumbing,Plumbing Maintenance Team,2026-11-03,2026-11-05,False,H14,1,Open
+T011,B110,cleaning,Housekeeping Team,2026-11-03,2026-11-05,False,H15,1,Open
+T012,C205,electrical,Electrical Maintenance Team,2026-11-03,2026-11-03,True,H16,1,Open
+T013,D310,carpentry,Carpentry Maintenance Team,2026-11-03,2026-11-05,False,H17,1,Open
+T014,B415,internet,IT Support Team,2026-11-03,2026-11-05,False,H19,1,Open
+T015,C120,cleaning,Housekeeping Team,2026-11-03,2026-11-05,False,H20,1,Open

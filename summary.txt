@@ -1,0 +1,11 @@
+HOSTEL MAINTENANCE SORTER SUMMARY
+=================================
+
+Total complaints: 20
+New tickets created: 12
+Duplicate complaints joined: 6
+Complaints needing information: 2
+Urgent tickets: 3
+Total tickets: 15
+
+All tickets require appropriate human review.

@@ -1,0 +1,4 @@
+ticket,room,issue,team,opened,due_date,complaint_ids
+T004,A105,electrical,Electrical Maintenance Team,2026-11-03,2026-11-03,H03;H06;H18
+T006,A205,electrical,Electrical Maintenance Team,2026-11-03,2026-11-03,H10
+T012,C205,electrical,Electrical Maintenance Team,2026-11-03,2026-11-03,H16
