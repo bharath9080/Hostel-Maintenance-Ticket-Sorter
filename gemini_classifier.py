@@ -59,7 +59,7 @@ def classify_with_gemini(complaint):
         issue = "other"
         urgent = False
 
-    # Extract room number exactly as written
+    # Extract valid room number exactly as written
     match = re.search(
         r"\b[A-D][1-4](?:0[1-9]|1[0-9]|20)\b",
         complaint.upper()
@@ -77,8 +77,7 @@ def classify_with_gemini(complaint):
 
 def validate_gemini_response(response):
     """
-    Checks whether the classification response
-    contains the required fields.
+    Validates the classification response.
     """
 
     required_fields = {
@@ -94,8 +93,15 @@ def validate_gemini_response(response):
     if set(response.keys()) != required_fields:
         raise ValueError("Missing or unexpected fields")
 
-    if response["room"] is not None and not isinstance(response["room"], str):
-        raise ValueError("Room must be a string or None")
+    if response["room"] is not None:
+        if not isinstance(response["room"], str):
+            raise ValueError("Room must be a string or None")
+
+        if not re.fullmatch(
+            r"[A-D][1-4](?:0[1-9]|1[0-9]|20)",
+            response["room"]
+        ):
+            raise ValueError("Invalid room number")
 
     if response["issue"] not in {
         "electrical",
