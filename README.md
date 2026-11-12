@@ -1,47 +1,83 @@
 # Hostel Maintenance Ticket Sorter
 
+An AI-assisted hostel maintenance complaint classification and ticket management system built using Python and the Google Gemini API.
+
 ## 1. Project Overview
 
-The Hostel Maintenance Ticket Sorter is a Python-based project designed to classify student maintenance complaints and organize them into maintenance work orders.
+The Hostel Maintenance Ticket Sorter automates the initial processing of student maintenance complaints.
 
-The project demonstrates an LLM-based classification approach to identify the room number, issue category, urgency, and a short complaint summary.
+It uses Google's Gemini API to classify complaints, extract room numbers, identify issue categories, determine urgency, and generate short summaries.
 
-Python handles validation, urgency checks, team assignment, duplicate detection, and due-date calculation.
+Python handles response validation, room verification, safety checks, duplicate detection, maintenance team assignment, due-date calculation, and report generation.
 
-**Note:** The current implementation uses a local mock classifier. Live Gemini API integration is planned for a future development stage.
+The system supports human-supervised maintenance management. All generated tickets require appropriate human review.
 
 ## 2. Project Objectives
 
 - Automatically classify hostel maintenance complaints.
+- Extract and validate room numbers.
 - Identify urgent maintenance issues.
-- Validate room numbers.
-- Assign complaints to the appropriate maintenance team.
-- Detect duplicate complaints and join existing tickets.
-- Generate reports for maintenance staff.
-- Keep the warden responsible for reviewing and closing tickets.
+- Assign complaints to appropriate maintenance teams.
+- Detect duplicate complaints and link them to existing tickets.
+- Generate structured maintenance reports.
+- Maintain human oversight of maintenance decisions.
 
 ## 3. Technologies Used
 
-- Python
-- CSV files
-- JSON
-- Python datetime module
+- Python 3
+- Google Gemini API
+- Google Gen AI Python SDK
+- Python-dotenv
+- CSV and JSON
 - Regular expressions
-- Gemini API (planned for future live integration)
+- Python datetime module
 
-## 4. Project Files
+## 4. System Architecture
+
+The project follows a combination of AI-based classification and rule-based Python processing.
+
+**Processing workflow:**
+
+1. Read complaints from the CSV dataset.
+2. Send each complaint to the Gemini API.
+3. Receive structured JSON classification.
+4. Validate the Gemini response.
+5. Verify the room number.
+6. Apply Python safety checks.
+7. Detect duplicate complaints.
+8. Assign the appropriate maintenance team.
+9. Calculate ticket due dates.
+10. Generate CSV reports and a processing summary.
+
+### Issue Categories
+
+- Electrical
+- Plumbing
+- Carpentry
+- Cleaning
+- Internet
+- Other
+
+### Maintenance Team Assignment
+
+Complaints are routed to the appropriate maintenance team based on their issue category.
+
+## 5. Project Files
 
 | File | Description |
 |---|---|
 | complaints.csv | Student complaint dataset |
 | open_tickets.csv | Existing maintenance tickets |
-| system_prompt.txt | Instructions for the planned LLM classifier |
-| gemini_classifier.py | Local mock classification logic |
+| system_prompt.txt | Gemini classification instructions |
+| gemini_classifier.py | Gemini API integration and response validation |
+| main_mock.py | Main complaint processing workflow |
 | cp2_test_mock.py | Single-complaint mock workflow test |
-| main_mock.py | Main mock processing program |
-| test_gemini_classifier.py | Classification response validation tests |
-| results.csv | Classification results |
-| work_orders.csv | Maintenance work orders |
+| test_gemini_classifier.py | Classification validation tests |
+| test_gemini.py | Gemini API connectivity test |
+| test_real_gemini.py | Live Gemini classification test |
+| list_models.py | Lists available Gemini models |
+| results.csv | Complaint processing results |
+| work_orders.csv | Generated maintenance work orders |
 | needs_info.csv | Complaints requiring clarification |
 | urgent_tickets.csv | Urgent maintenance tickets |
 | summary.txt | Processing summary |
@@ -50,85 +86,132 @@ Python handles validation, urgency checks, team assignment, duplicate detection,
 | ai_decision_journal.md | AI development decision journal |
 | cost_latency.md | Cost and latency planning |
 | reflection.md | Project reflection |
-| README.md | Project documentation |
 
-## 5. How the System Works
+## 6. Installation and Setup
 
-1. Read student complaints from the CSV file.
-2. Classify complaints into predefined issue categories.
-3. Extract the room number and urgency.
-4. Validate the extracted information.
-5. Apply Python safety checks.
-6. Assign the appropriate maintenance team.
-7. Detect duplicate complaints.
-8. Calculate the due date.
-9. Generate output reports.
+### Prerequisites
 
-## 6. Human Review
+- Python 3
+- Internet connection
+- Google Gemini API key
 
-The warden reviews all urgent tickets, assigns maintenance work, and decides when a ticket can be closed.
-
-The system does not automatically close tickets.
-
-Human supervision is important because maintenance decisions may affect student safety.
-
-## 7. Testing and Evaluation
-
-The project includes:
-
-- Single-complaint mock workflow testing.
-- Full dataset processing with 20 complaints.
-- Duplicate detection testing.
-- Red-team testing for misleading urgency and invalid room numbers.
-- JSON response validation testing.
-- Generation of five output files.
-
-The evaluation results are documented in `evaluation_results.md`.
-
-## 8. Current Development Status
-
-- Local mock classifier implemented and tested.
-- Single-complaint mock workflow tested successfully.
-- Full dataset of 20 complaints processed successfully.
-- Duplicate detection and red-team tests completed.
-- JSON response validation tested successfully.
-- Five output files generated.
-- Live Gemini API integration is pending faculty-managed access and verification.
-
-**Important:** The current classifier uses local Python logic and does not make external Gemini API calls. The current test results demonstrate mock processing and validation, not live LLM performance.
-
-## 9. How to Run
-
-Make sure Python 3 is installed and open the project directory in Terminal.
-
-Run the single-complaint mock test:
+### Install dependencies
 
 ```bash
-python3 cp2_test_mock.py
+pip install google-genai python-dotenv
 ```
 
-Run the full mock-processing program:
+### Configure the API key
+
+Create a `.env` file in the project directory:
+
+```env
+GEMINI_API_KEY=your_api_key_here
+```
+
+Never upload your `.env` file or expose your API key publicly.
+
+The `.gitignore` file excludes the API key file from Git tracking.
+
+## 7. How to Run
+
+Run the following commands from the project directory.
+
+### Test Gemini API connectivity
 
 ```bash
-python3 main_mock.py
+python3 test_gemini.py
 ```
 
-Run the classifier validation tests:
+### Test live complaint classification
+
+```bash
+python3 test_real_gemini.py
+```
+
+### Test response validation
 
 ```bash
 python3 test_gemini_classifier.py
 ```
 
-## 10. Future Improvements
+### Run the complete complaint processing workflow
 
-- Complete approved live Gemini API integration.
-- Improve classification accuracy using real LLM responses.
-- Measure actual API response time and cost.
-- Test duplicate detection through the complete processing pipeline.
-- Develop a user-friendly interface for students and hostel wardens.
+```bash
+python3 main_mock.py
+```
 
-## 11. Conclusion
+The main program processes complaints and generates the output reports.
 
-The Hostel Maintenance Ticket Sorter demonstrates how AI-assisted classification and Python automation can help organize hostel maintenance complaints.
+## 8. Error Handling and Validation
 
-The project combines automated processing with human supervision to support better complaint management, prioritization, and maintenance tracking.
+The Gemini integration includes:
+
+- Structured JSON response generation.
+- Validation of required response fields.
+- Validation of issue categories and urgency types.
+- Summary length validation.
+- Empty response and invalid JSON handling.
+- Automatic retries for temporary API failures.
+
+The retry mechanism handles temporary server and rate-limit errors using increasing wait times.
+
+Python remains responsible for ticket creation and maintenance routing.
+
+## 9. Testing and Evaluation
+
+The project was tested using a dataset of 20 maintenance complaints.
+
+### Processing Results
+
+| Metric | Result |
+|---|---:|
+| Total complaints | 20 |
+| New tickets created | 12 |
+| Duplicate complaints joined | 6 |
+| Complaints needing information | 2 |
+| Urgent tickets | 3 |
+| Total tickets | 15 |
+
+### Tests Performed
+
+- Live Gemini API connectivity testing.
+- Real complaint classification testing.
+- JSON response validation.
+- Invalid issue category testing.
+- Invalid urgency type testing.
+- Summary length validation.
+- Duplicate complaint detection.
+- Invalid room number testing.
+- Red-team testing for misleading urgency.
+- Full dataset processing.
+
+## 10. Human Review and Safety
+
+The system assists maintenance staff but does not replace human decision-making.
+
+- Urgent tickets should receive prompt human attention.
+- Maintenance teams must review assigned work orders.
+- Complaints requiring clarification must be investigated.
+- Tickets are not automatically closed by the AI.
+- Human supervision is required for maintenance decisions.
+
+The system is a project prototype and should not be treated as a production emergency-response system.
+
+## 11. Future Improvements
+
+- Develop a web interface for students and wardens.
+- Add a maintenance staff dashboard.
+- Integrate email or notification alerts.
+- Improve duplicate detection.
+- Track ticket completion and maintenance history.
+- Evaluate classification accuracy using a larger labelled dataset.
+- Measure API cost and response latency.
+
+## 12. Conclusion
+
+The Hostel Maintenance Ticket Sorter demonstrates how generative AI and Python automation can improve the initial organization of hostel maintenance complaints.
+
+By combining Gemini-based classification, rule-based validation, duplicate detection, and human supervision, the project provides a structured approach to maintenance ticket management.
+
+**The project demonstrates practical integration of an LLM API into a Python-based automation workflow.**
