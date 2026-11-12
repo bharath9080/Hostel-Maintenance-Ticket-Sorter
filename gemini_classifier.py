@@ -1,83 +1,120 @@
 
-import re
+import json
+import os
+import time
+from pathlib import Path
+
+from dotenv import load_dotenv
+from google import genai
+from google.genai import types, errors
+
+
+BASE_DIR = Path(__file__).resolve().parent
+
+load_dotenv(BASE_DIR / ".env")
+
+API_KEY = os.getenv("GEMINI_API_KEY")
+
+if not API_KEY:
+    raise ValueError("GEMINI_API_KEY not found in .env")
+
+client = genai.Client(api_key=API_KEY)
+
+MODEL_NAME = "gemini-3.5-flash-lite"
+
+PROMPT_FILE = BASE_DIR / "system_prompt.txt"
+
+# Retry configuration
+MAX_ATTEMPTS = 4
+RETRY_BASE_SECONDS = 2
+
+RETRYABLE_STATUS_CODES = {
+    429,  # Rate limit
+    500,  # Internal server error
+    502,  # Bad gateway
+    503,  # Service unavailable
+    504   # Gateway timeout
+}
 
 
 def classify_with_gemini(complaint):
     """
-    Local mock classifier for testing.
-    No external API request is made.
+    Classify a hostel maintenance complaint using Gemini.
+    Automatically retries temporary API failures.
+    Returns a validated dictionary.
     """
 
     if not complaint or not complaint.strip():
         raise ValueError("Complaint cannot be empty")
 
-    text = complaint.lower()
+    if not PROMPT_FILE.exists():
+        raise FileNotFoundError("system_prompt.txt not found")
 
-    # Water near electrical fittings
-    if "water" in text and (
-        "electrical fittings" in text or "near the switch" in text
-    ):
-        issue = "electrical"
-        urgent = True
-
-    # Electrical complaints
-    elif any(word in text for word in [
-        "spark", "burning smell", "shock", "fan", "switchboard"
-    ]):
-        issue = "electrical"
-        urgent = any(word in text for word in [
-            "spark", "burning smell", "shock"
-        ])
-
-    # Plumbing complaints
-    elif any(word in text for word in ["leak", "pipe", "tap"]):
-        issue = "plumbing"
-        urgent = any(word in text for word in [
-            "overflowing", "flooding"
-        ])
-
-    # Internet complaints
-    elif "wifi" in text or "internet" in text:
-        issue = "internet"
-        urgent = False
-
-    # Cleaning complaints
-    elif any(word in text for word in [
-        "clean", "housekeeping", "dirty"
-    ]):
-        issue = "cleaning"
-        urgent = False
-
-    # Carpentry complaints
-    elif any(word in text for word in [
-        "door", "window", "handle"
-    ]):
-        issue = "carpentry"
-        urgent = False
-
-    else:
-        issue = "other"
-        urgent = False
-
-    # Extract valid room number exactly as written
-    match = re.search(
-        r"\b[A-D][1-4](?:0[1-9]|1[0-9]|20)\b",
-        complaint.upper()
+    system_prompt = PROMPT_FILE.read_text(
+        encoding="utf-8"
     )
 
-    response = {
-        "room": match.group(0) if match else None,
-        "issue": issue,
-        "urgent": urgent,
-        "summary": " ".join(complaint.split()[:10])
-    }
+    response = None
 
-    return validate_gemini_response(response)
+    for attempt in range(1, MAX_ATTEMPTS + 1):
+
+        try:
+            print(
+                f"Calling Gemini (attempt {attempt}/{MAX_ATTEMPTS})..."
+            )
+
+            response = client.models.generate_content(
+                model=MODEL_NAME,
+                contents=complaint,
+                config=types.GenerateContentConfig(
+                    system_instruction=system_prompt,
+                    response_mime_type="application/json",
+                    temperature=0
+                )
+            )
+
+            break
+
+        except errors.APIError as error:
+
+            status_code = getattr(error, "code", None)
+
+            if (
+                status_code not in RETRYABLE_STATUS_CODES
+                or attempt == MAX_ATTEMPTS
+            ):
+                print("Gemini API request failed:", error)
+                raise
+
+            wait_seconds = RETRY_BASE_SECONDS * (
+                2 ** (attempt - 1)
+            )
+
+            print(
+                f"Gemini temporarily unavailable "
+                f"(HTTP {status_code}). "
+                f"Retrying in {wait_seconds} seconds..."
+            )
+
+            time.sleep(wait_seconds)
+
+    if response is None or not response.text:
+        raise ValueError("Gemini returned an empty response")
+
+    try:
+        result = json.loads(response.text)
+
+    except json.JSONDecodeError as error:
+        raise ValueError(
+            "Gemini returned invalid JSON"
+        ) from error
+
+    return validate_gemini_response(result)
 
 
 def validate_gemini_response(response):
     """
-    Validates the classification response.
+    Validate Gemini's classification response.
     """
 
     required_fields = {
@@ -97,11 +134,8 @@ def validate_gemini_response(response):
         if not isinstance(response["room"], str):
             raise ValueError("Room must be a string or None")
 
-        if not re.fullmatch(
-            r"[A-D][1-4](?:0[1-9]|1[0-9]|20)",
-            response["room"]
-        ):
-            raise ValueError("Invalid room number")
+    if not isinstance(response["issue"], str):
+        raise ValueError("Issue must be a string")
 
     if response["issue"] not in {
         "electrical",
@@ -120,6 +154,8 @@ def validate_gemini_response(response):
         raise ValueError("Summary must be a string")
 
     if len(response["summary"].split()) > 10:
-        raise ValueError("Summary must contain at most 10 words")
+        raise ValueError(
+            "Summary must contain at most 10 words"
+        )
 
     return response
