@@ -97,8 +97,9 @@ Complaints are routed to the appropriate maintenance team based on their issue c
 
 ### Install dependencies
 
+
 ```bash
-pip install google-genai python-dotenv
+python3 -m pip install -r requirements.txt
 ```
 
 ### Configure the API key
